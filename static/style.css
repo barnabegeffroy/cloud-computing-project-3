@@ -53,3 +53,7 @@ main {
 #bio-text {
     height: 125px;
 }
+
+.user-col {
+    width: 300px;
+}

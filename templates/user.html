@@ -2,12 +2,27 @@
 {% block title %}User - John Doe{% endblock %}
 {% block content %}
 <div class="d-flex">
-    <div class="d-flex flex-column text-center me-5">
+    <div class="d-flex flex-column user-col text-center me-5">
         <div class="card mb-3 shadow">
             <i class="fa-solid fa-user-circle fa-10x text-primary"></i>
             <div class="card-body">
-                <h5 class="card-title">John Doe</h5>
-                <p class="card-text">Number of following : 100</p>
+                <h5 class="card-title">{{ user_data['name'] if ownProfile else user['name'] }}</h5>
+                <h6 class="text-secondary">@{{ user_data['username'] if ownProfile else user['username'] }}</h6>
+                <p class="card-text">{{ user_data['bio'] if ownProfile else user['bio'] }}</p>
+                <hr>
+                <p class="card-text">Number of followings : {{ user_data['followings']|length if ownProfile else
+                    user['followings']|length }}</p>
+                <p class="card-text">Number of followers : {{ user_data['followers']|length if ownProfile else
+                    user['followers']|length }}</p>
+            </div>
+            <div class="card-footer bg-white">
+                {% if ownProfile %}
+                <button class="btn btn-outline-primary border rounded-pill" data-bs-toggle="modal"
+                    data-bs-target="#modal-edit">
+                    <i class="fa-solid fa-pencil-alt"></i>
+                    Edit
+                </button>
+                {% else %}
                 <button class="btn btn-outline-primary border rounded-pill">
                     <i class="fa-solid fa-plus"></i>
                     Follow
@@ -16,6 +31,7 @@
                     <i class="fa-solid fa-ban"></i>
                     Unfollow
                 </button>
+                {% endif %}
             </div>
         </div>
     </div>
@@ -102,4 +118,36 @@
         </div>
     </div>
 </div>
+
+{% if ownProfile %}
+<div class="modal fade" id="modal-edit" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Edit your account</h5>
+            </div>
+            <div class="modal-body">
+                <form action="/edit_user" id="edit-form" method="post">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Your name</label>
+                        <input type="text" class="form-control" id="name" name="name" value="{{ user_data['name'] }}"
+                            required>
+                    </div>
+                    <div class="mb-3 form-floating">
+                        <textarea class="form-control" id="bio-text" name="bio-text"
+                            maxlength="140">{{ user_data['bio'] }}</textarea>
+                        <label for="bio-text">Your description...</label>
+                        <span class="float-end" id="count-tweet"></span>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" form="edit-form" class="btn btn-outline-primary border rounded-pill">Edit
+                    !</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
 {% endblock %}

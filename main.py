@@ -13,7 +13,8 @@ firebase_request_adapter = requests.Request()
 
 
 def createUser(email, name, username, bio):
-    entity_key = datastore_client.key('User', email)
+    id = hashlib.md5(email.encode()).hexdigest()
+    entity_key = datastore_client.key('User', id)
     entity = datastore.Entity(key=entity_key)
     entity.update({
         'username': username,
@@ -27,8 +28,14 @@ def createUser(email, name, username, bio):
     return entity
 
 
-def getUser(claims):
-    entity_key = datastore_client.key('User', claims['email'])
+def getUserByClaims(claims):
+    id = hashlib.md5(claims['email'].encode()).hexdigest()
+    entity_key = datastore_client.key('User', id)
+    return datastore_client.get(entity_key)
+
+
+def getUserById(id):
+    entity_key = datastore_client.key('User', id)
     return datastore_client.get(entity_key)
 
 
@@ -53,7 +60,7 @@ def root():
         try:
             claims = google.oauth2.id_token.verify_firebase_token(
                 id_token, firebase_request_adapter)
-            user_data = getUser(claims)
+            user_data = getUserByClaims(claims)
             if not user_data:
                 return redirect('/init_account')
 
@@ -95,7 +102,7 @@ def createAccount():
         try:
             claims = google.oauth2.id_token.verify_firebase_token(
                 id_token, firebase_request_adapter)
-            user_data = getUser(claims)
+            user_data = getUserByClaims(claims)
             if user_data:
                 return redirect('/')
             name = request.form['name']
@@ -113,7 +120,8 @@ def createAccount():
             status = "error"
     else:
         redirect('/login')
-    return render_template('index.html', user_data=user_data, message=message, status=status, tutorial=True)
+    return redirect(url_for('.root', message=message, status=status))
+    # return render_template('index.html', user_data=user_data,, tutorial=True)
 
 
 @app.route('/login')
@@ -125,24 +133,62 @@ def login():
         return render_template('login.html')
 
 
-@app.route('/user', methods=['GET'])
-def user():
+@app.route('/user/<string:id>', methods=['GET'])
+def user(id):
     id_token = request.cookies.get("token")
     claims = None
     user_data = None
+    user = None
+    ownProfile = False
     message = request.args.get('message')
     status = request.args.get('status')
     if id_token:
         try:
             claims = google.oauth2.id_token.verify_firebase_token(
                 id_token, firebase_request_adapter)
-            user_data = getUser(claims)
+            user_data = getUserByClaims(claims)
+            if user_data.key.name == id:
+                ownProfile = True
+            else:
+                user = getUserById(id)
         except ValueError as exc:
             message = str(exc)
             status = "error"
     else:
         return render_template('login.html')
-    return render_template('user.html', user_data=user_data, message=message, status=status)
+    return render_template('user.html', user_data=user_data, user=user, ownProfile=ownProfile, message=message, status=status)
+
+
+def updateUser(user, name, bio):
+    user.update({
+        'name': name,
+        'bio': bio
+    })
+    datastore_client.put(user)
+
+
+@app.route('/edit_user', methods=['POST'])
+def edit_user():
+    id_token = request.cookies.get("token")
+    claims = None
+    user_data = None
+    message = None
+    status = None
+    if id_token:
+        try:
+            claims = google.oauth2.id_token.verify_firebase_token(
+                id_token, firebase_request_adapter)
+            user_data = getUserByClaims(claims)
+            updateUser(
+                user_data, request.form['name'], request.form['bio-text'])
+            message = "Your profile has been updated"
+            status = "success"
+        except ValueError as exc:
+            message = str(exc)
+            status = "error"
+    else:
+        redirect('/login')
+    return redirect(url_for('.user', id=user_data.key.name, message=message, status=status))
 
 
 @app.errorhandler(404)
