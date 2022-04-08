@@ -1,0 +1,55 @@
+header {
+    height: 175px;
+}
+
+main {
+    margin-top: 175px;
+}
+
+#search-form {
+    width: 40%;
+}
+
+#search-object {
+    border-radius: 5000px 0 0 5000px;
+    padding-left: 1rem;
+}
+
+#search-submit {
+    border-radius: 0 5000px 5000px 0;
+    padding-right: 1rem;
+}
+
+.card {
+    margin-top: 1em;
+    padding: 1.5em 0.5em 0.5em;
+    border-radius: 2em;
+}
+
+.tweet {
+    width: 500px;
+}
+
+.add {
+    height: 10vh;
+    font-size: x-large;
+}
+
+#tweet-text {
+    height: 175px;
+    /* margin-top: -20px; */
+}
+
+.pop {
+    width: 450px;
+    height: 225px;
+    overflow: hidden;
+}
+
+#modal-creation {
+    margin-top: 15%;
+}
+
+#bio-text {
+    height: 125px;
+}

@@ -1,0 +1,96 @@
+{% extends "layout.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+<div class="d-flex flex-column">
+
+    <button class="tweet add shadow button btn-outline-primary w-100 border rounded-pill" data-bs-toggle="modal"
+        data-bs-target="#edit-tweet">Add a tweet</button>
+    <div class="card tweet mb-3 shadow">
+        <div class="card-header bg-white d-flex">
+            <div class="card-user d-flex">
+                <i class="fa-solid fa-user-circle fa-4x text-primary"></i>
+                <div class="d-flex flex-column align-items-end pt-2 ms-2">
+                    <span class="name">John Doe</span>
+                    <span class="username text-secondary">@johndoe</span>
+                </div>
+            </div>
+            <div class="date ms-auto">
+                <span class="text-secondary">32m</span>
+            </div>
+        </div>
+        <div class="card-body">
+            <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque interdum rutrum
+                sodales. Nullam mattis fermentum libero, non volutpat. Lorem ipsum dolor sit amet, consectetur
+                adipiscing
+                elit. Pellentesque interdum rutrum
+                sodales. Nullam mattis fermentum libero, non volutpat.</p>
+        </div>
+        <div class="card-footer bg-white">
+            <button class="btn btn-outline-primary border rounded-pill">
+                <i class="fa-solid fa-pencil-alt"></i>
+                Edit
+            </button>
+            <button class="btn btn-outline-danger border rounded-pill">
+                <i class="fa-solid fa-trash"></i>
+                Delete
+            </button>
+        </div>
+    </div>
+    <div class="card tweet mb-3 shadow">
+        <div class="card-header bg-white d-flex">
+            <div class="card-user d-flex">
+                <i class="fa-solid fa-user-circle fa-4x text-primary"></i>
+                <div class="d-flex flex-column align-items-end pt-2 ms-2">
+                    <span class="name">John Doe</span>
+                    <span class="username text-secondary">@johndoe</span>
+                </div>
+            </div>
+            <div class="date ms-auto">
+                <span class="text-secondary">32m</span>
+            </div>
+        </div>
+        <div class="card-body">
+            <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque interdum rutrum
+                sodales. Nullam mattis fermentum libero, non volutpat. Lorem ipsum dolor sit amet, consectetur
+                adipiscing
+                elit. Pellentesque interdum rutrum
+                sodales. Nullam mattis fermentum libero, non volutpat.</p>
+            <div class="pop d-flex justify-content-center">
+                <img class="image" src="../static/img.jpg" alt="" height="250px">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="imagemodal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <img src="" class="imagepreview">
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="edit-tweet" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">New tweet</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3 form-floating">
+                        <textarea class="form-control" id="tweet-text" maxlength="280"></textarea>
+                        <label for="tweet-text">Tweet content...</label>
+                        <span class="float-end" id="count-tweet"></span>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-primary border rounded-pill">Post it !</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

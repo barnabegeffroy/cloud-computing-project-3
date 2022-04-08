@@ -1,0 +1,38 @@
+{% extends "layout.html" %}
+{% set active_page = "home" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+
+<div class="modal fade" id="modal-creation" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Create your account</h5>
+            </div>
+            <div class="modal-body">
+                <form action="/create_account" id="creation-form" method="post">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Your name</label>
+                        <input type="text" class="form-control" id="name" name="name" value="{{ user_data['name'] }}"
+                            required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Your username</label>
+                        <input type="text" class="form-control" id="username" name="username"
+                            placeholder="Choose your best username..." required>
+                    </div>
+                    <div class="mb-3 form-floating">
+                        <textarea class="form-control" id="bio-text" name="bio-text" maxlength="140"></textarea>
+                        <label for="bio-text">Your description...</label>
+                        <span class="float-end" id="count-tweet"></span>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" form="creation-form" class="btn btn-outline-primary border rounded-pill">Create
+                    !</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,105 @@
+{% extends "layout.html" %}
+{% block title %}User - John Doe{% endblock %}
+{% block content %}
+<div class="d-flex">
+    <div class="d-flex flex-column text-center me-5">
+        <div class="card mb-3 shadow">
+            <i class="fa-solid fa-user-circle fa-10x text-primary"></i>
+            <div class="card-body">
+                <h5 class="card-title">John Doe</h5>
+                <p class="card-text">Number of following : 100</p>
+                <button class="btn btn-outline-primary border rounded-pill">
+                    <i class="fa-solid fa-plus"></i>
+                    Follow
+                </button>
+                <button class="btn btn-outline-primary border rounded-pill">
+                    <i class="fa-solid fa-ban"></i>
+                    Unfollow
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="d-flex flex-column">
+        <div class="card tweet mb-3 shadow">
+            <div class="card-header bg-white d-flex">
+                <div class="card-user d-flex">
+                    <i class="fa-solid fa-user-circle fa-4x text-primary"></i>
+                    <div class="d-flex flex-column align-items-end pt-2 ms-2">
+                        <span class="name">John Doe</span>
+                        <span class="username text-secondary">@johndoe</span>
+                    </div>
+                </div>
+                <div class="date ms-auto">
+                    <span class="text-secondary">32m</span>
+                </div>
+            </div>
+            <div class="card-body">
+                <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque interdum
+                    rutrum
+                    sodales. Nullam mattis fermentum libero, non volutpat. Lorem ipsum dolor sit amet, consectetur
+                    adipiscing
+                    elit. Pellentesque interdum rutrum
+                    sodales. Nullam mattis fermentum libero, non volutpat.</p>
+            </div>
+        </div>
+        <div class="card tweet mb-3 shadow">
+            <div class="card-header bg-white d-flex">
+                <div class="card-user d-flex">
+                    <i class="fa-solid fa-user-circle fa-4x text-primary"></i>
+                    <div class="d-flex flex-column align-items-end pt-2 ms-2">
+                        <span class="name">John Doe</span>
+                        <span class="username text-secondary">@johndoe</span>
+                    </div>
+                </div>
+                <div class="date ms-auto">
+                    <span class="text-secondary">32m</span>
+                </div>
+            </div>
+            <div class="card-body">
+                <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque interdum
+                    rutrum
+                    sodales. Nullam mattis fermentum libero, non volutpat. Lorem ipsum dolor sit amet, consectetur
+                    adipiscing
+                    elit. Pellentesque interdum rutrum
+                    sodales. Nullam mattis fermentum libero, non volutpat.</p>
+                <div class="pop d-flex justify-content-center">
+                    <img class="image" src="../static/img.jpg" alt="" height="250px" width="100%">
+                </div>
+            </div>
+        </div>
+        <div class="card tweet mb-3 shadow">
+            <div class="card-header bg-white d-flex">
+                <div class="card-user d-flex">
+                    <i class="fa-solid fa-user-circle fa-4x text-primary"></i>
+                    <div class="d-flex flex-column align-items-end pt-2 ms-2">
+                        <span class="name">John Doe</span>
+                        <span class="username text-secondary">@johndoe</span>
+                    </div>
+                </div>
+                <div class="date ms-auto">
+                    <span class="text-secondary">32m</span>
+                </div>
+            </div>
+            <div class="card-body">
+                <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque interdum
+                    rutrum
+                    sodales. Nullam mattis fermentum libero, non volutpat. Lorem ipsum dolor sit amet, consectetur
+                    adipiscing
+                    elit. Pellentesque interdum rutrum
+                    sodales. Nullam mattis fermentum libero, non volutpat.</p>
+                <div class="pop d-flex justify-content-center">
+                    <img class="image" src="../static/img2.jpg" alt="" height="250px">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="imagemodal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <img src="" class="imagepreview">
+        </div>
+    </div>
+</div>
+{% endblock %}
