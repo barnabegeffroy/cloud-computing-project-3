@@ -88,11 +88,11 @@ def initAccount():
             status = "error"
     else:
         redirect('/login')
-    return render_template('create_account.html', user_data=claims, message=message, status=status)
+    return render_template('init_account.html', user_data=claims, message=message, status=status)
 
 
-@app.route('/create_account', methods=['POST'])
-def createAccount():
+@app.route('/put_user', methods=['POST'])
+def putUser():
     id_token = request.cookies.get("token")
     claims = None
     user_data = None
@@ -189,6 +189,11 @@ def edit_user():
     else:
         redirect('/login')
     return redirect(url_for('.user', id=user_data.key.name, message=message, status=status))
+
+
+@app.route('/put_tweet')
+def method_name():
+    pass
 
 
 @app.errorhandler(404)
