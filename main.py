@@ -241,7 +241,7 @@ def putTweet():
 def getUsers(str):
     print(str)
     query = datastore_client.query(kind='User')
-    query.add_filter('username', '>=', str)
+    query.add_filter('username', '=', str)
     return list(query.fetch())
 
 
@@ -269,8 +269,35 @@ def searchUser():
 
 def getTweets(str):
     query = datastore_client.query(kind='Tweet')
-    query.add_filter('content', '>=', str)
-    return list(query.fetch())
+    query.add_filter('content', '=', str)
+    result = list(query.fetch())
+    result.sort(key=lambda x: x['date'], reverse=True)
+    tuples = []
+    for tweet in result:
+        tuples.append((getUserById(tweet['user']), tweet))
+    return tuples
+
+
+@app.route('/search_tweet', methods=['GET'])
+def searchTweet():
+    id_token = request.cookies.get("token")
+    claims = None
+    user_data = None
+    message = request.args.get('message')
+    status = request.args.get('status')
+    result = None
+    if id_token:
+        try:
+            claims = google.oauth2.id_token.verify_firebase_token(
+                id_token, firebase_request_adapter)
+            user_data = getUserByClaims(claims)
+            result = getTweets(request.args.get('search-input'))
+        except ValueError as exc:
+            message = str(exc)
+            status = "error"
+    else:
+        return render_template('login.html')
+    return render_template('search_tweets.html', user_data=user_data, text=request.args.get('search-input'), result=result,  message=message, status=status)
 
 
 def getLast50Tweets(user):

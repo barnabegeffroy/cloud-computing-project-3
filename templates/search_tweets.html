@@ -1,0 +1,37 @@
+{% extends "layout.html" %}
+{% block title %}Result for "{{ text }}"{% endblock %}
+{% block content %}
+<div class="d-flex flex-column align-items-center">
+    <h3>Result for "{{ text }}"</h3>
+    {% for (user,tweet) in result %}
+    <div class="card tweet mb-3 shadow">
+        <div class="card-header bg-white d-flex">
+            <div class="card-user d-flex">
+                <i class="fa-solid fa-user-circle fa-4x text-primary"></i>
+                <div class="d-flex flex-column align-items-end pt-2 ms-2">
+                    <span class="name">{{ user['name'] }}</span>
+                    <span class="username text-secondary">@{{ user['username'] }}</span>
+                </div>
+            </div>
+            <div class="date ms-auto">
+                <span class="text-secondary">{{ tweet['date'] }}</span>
+            </div>
+        </div>
+        <div class="card-body">
+            <p class="card-text">{{ tweet['content'] }}</p>
+        </div>
+        {% if user.key.name == user_data.key.name %}
+        <div class="card-footer bg-white">
+            <button class="btn btn-outline-primary border rounded-pill">
+                <i class="fa-solid fa-pencil-alt"></i>
+                Edit
+            </button>
+            <button class="btn btn-outline-danger border rounded-pill">
+                <i class="fa-solid fa-trash"></i>
+                Delete
+            </button>
+        </div>
+        {% endif %}
+    </div>
+    {% endfor %}
+    {% endblock %}

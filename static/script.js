@@ -83,6 +83,5 @@ window.addEventListener('load', function () {
         var text_length = $('#bio-text').val().length;
         $('#count-tweet').html(text_length + ' / ' + bio_max);
     });
-
 });
 
