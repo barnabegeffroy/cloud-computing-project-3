@@ -140,6 +140,7 @@ def user(id):
     user_data = None
     user = None
     ownProfile = False
+    tweets = None
     message = request.args.get('message')
     status = request.args.get('status')
     if id_token:
@@ -151,12 +152,14 @@ def user(id):
                 ownProfile = True
             else:
                 user = getUserById(id)
+            tweets = getLast50Tweets(user_data)
+
         except ValueError as exc:
             message = str(exc)
             status = "error"
     else:
         return render_template('login.html')
-    return render_template('user.html', user_data=user_data, user=user, ownProfile=ownProfile, message=message, status=status)
+    return render_template('user.html', user_data=user_data, user=user, ownProfile=ownProfile, tweets=tweets, message=message, status=status)
 
 
 def updateUser(user, name, bio):
@@ -191,12 +194,61 @@ def edit_user():
     return redirect(url_for('.user', id=user_data.key.name, message=message, status=status))
 
 
-@app.route('/put_tweet')
-def method_name():
-    pass
+def createTweet(user, content):
+    today = datetime.today()
+    id = hashlib.md5((user.key.name + str(today)).encode()).hexdigest()
+    entity_key = datastore_client.key('Tweet', id)
+    tweetEntity = datastore.Entity(key=entity_key)
+    tweetEntity.update({
+        'user': user.key.name,
+        'content': content,
+        'date': today
+    })
+    tweets = user['tweets']
+    tweets.append(id)
+    user.update({
+        'tweets': tweets,
+    })
+    transaction = datastore_client.transaction()
+    with transaction:
+        transaction.put(tweetEntity)
+        transaction.put(user)
 
 
-@app.errorhandler(404)
+@app.route('/put_tweet', methods=['POST'])
+def putTweet():
+    id_token = request.cookies.get("token")
+    claims = None
+    user_data = None
+    message = None
+    status = None
+    if id_token:
+        try:
+            claims = google.oauth2.id_token.verify_firebase_token(
+                id_token, firebase_request_adapter)
+            user_data = getUserByClaims(claims)
+            createTweet(user_data, request.form['tweet-text'])
+            message = "Your tweet has been created"
+            status = "success"
+        except ValueError as exc:
+            message = str(exc)
+            status = "error"
+    else:
+        redirect('/login')
+    return redirect(url_for('.root', message=message, status=status))
+
+
+def getLast50Tweets(user):
+    tweetIds = user['tweets'][-50:]
+    tweetKeys = []
+    for i in range(len(tweetIds)):
+        tweetKeys.append(datastore_client.key('Tweet', tweetIds[i]))
+    result = datastore_client.get_multi(tweetKeys)
+    result.sort(key=lambda x: x['date'], reverse=True)
+    return result
+
+
+@ app.errorhandler(404)
 def notFound(error):
     return redirect(url_for('.root', message=error, status="error"))
 

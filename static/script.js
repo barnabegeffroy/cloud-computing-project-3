@@ -76,12 +76,12 @@ window.addEventListener('load', function () {
         var text_length = $('#tweet-text').val().length;
         $('#count-tweet').html(text_length + ' / ' + text_max);
     });
-    var text_max = 140;
-    $('#count-tweet').html('0 / ' + text_max);
+    var bio_max = 140;
+    $('#count-tweet').html('0 / ' + bio_max);
 
     $('#bio-text').keyup(function () {
         var text_length = $('#bio-text').val().length;
-        $('#count-tweet').html(text_length + ' / ' + text_max);
+        $('#count-tweet').html(text_length + ' / ' + bio_max);
     });
 
 });

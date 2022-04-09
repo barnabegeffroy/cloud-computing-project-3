@@ -23,42 +23,55 @@
                     Edit
                 </button>
                 {% else %}
-                <button class="btn btn-outline-primary border rounded-pill">
-                    <i class="fa-solid fa-plus"></i>
-                    Follow
-                </button>
+                {% if is in(user.key.name, user_data['followings']) %}
                 <button class="btn btn-outline-primary border rounded-pill">
                     <i class="fa-solid fa-ban"></i>
                     Unfollow
                 </button>
+                {% else %}
+                <button class="btn btn-outline-primary border rounded-pill">
+                    <i class="fa-solid fa-plus"></i>
+                    Follow
+                </button>
+                {% endif %}
                 {% endif %}
             </div>
         </div>
     </div>
     <div class="d-flex flex-column">
+        {% for tweet in tweets %}
         <div class="card tweet mb-3 shadow">
             <div class="card-header bg-white d-flex">
                 <div class="card-user d-flex">
                     <i class="fa-solid fa-user-circle fa-4x text-primary"></i>
                     <div class="d-flex flex-column align-items-end pt-2 ms-2">
-                        <span class="name">John Doe</span>
-                        <span class="username text-secondary">@johndoe</span>
+                        <span class="name">{{ user_data['name'] if ownProfile else user['name'] }}</span>
+                        <span class="username text-secondary">@{{ user_data['username'] if ownProfile else
+                            user['username'] }}</span>
                     </div>
                 </div>
                 <div class="date ms-auto">
-                    <span class="text-secondary">32m</span>
+                    <span class="text-secondary">{{ tweet['date'] }}</span>
                 </div>
             </div>
             <div class="card-body">
-                <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque interdum
-                    rutrum
-                    sodales. Nullam mattis fermentum libero, non volutpat. Lorem ipsum dolor sit amet, consectetur
-                    adipiscing
-                    elit. Pellentesque interdum rutrum
-                    sodales. Nullam mattis fermentum libero, non volutpat.</p>
+                <p class="card-text">{{ tweet['content'] }}</p>
             </div>
+            {% if ownProfile %}
+            <div class="card-footer bg-white">
+                <button class="btn btn-outline-primary border rounded-pill">
+                    <i class="fa-solid fa-pencil-alt"></i>
+                    Edit
+                </button>
+                <button class="btn btn-outline-danger border rounded-pill">
+                    <i class="fa-solid fa-trash"></i>
+                    Delete
+                </button>
+            </div>
+            {% endif %}
         </div>
-        <div class="card tweet mb-3 shadow">
+        {% endfor %}
+        <!-- <div class="card tweet mb-3 shadow">
             <div class="card-header bg-white d-flex">
                 <div class="card-user d-flex">
                     <i class="fa-solid fa-user-circle fa-4x text-primary"></i>
@@ -107,7 +120,7 @@
                     <img class="image" src="../static/img2.jpg" alt="" height="250px">
                 </div>
             </div>
-        </div>
+        </div> -->
     </div>
 </div>
 

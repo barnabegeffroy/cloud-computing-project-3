@@ -79,16 +79,17 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form>
+                <form id="add-tweet" action="/put_tweet" method="post">
                     <div class="mb-3 form-floating">
-                        <textarea class="form-control" id="tweet-text" maxlength="280"></textarea>
+                        <textarea class="form-control" id="tweet-text" name="tweet-text" maxlength="280"></textarea>
                         <label for="tweet-text">Tweet content...</label>
                         <span class="float-end" id="count-tweet"></span>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-outline-primary border rounded-pill">Post it !</button>
+                <button type="submit" form="add-tweet" class="btn btn-outline-primary border rounded-pill">Post it
+                    !</button>
             </div>
         </div>
     </div>
