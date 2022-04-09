@@ -6,13 +6,15 @@
     {% for (user,tweet) in result %}
     <div class="card tweet mb-3 shadow">
         <div class="card-header bg-white d-flex">
-            <div class="card-user d-flex">
-                <i class="fa-solid fa-user-circle fa-4x text-primary"></i>
-                <div class="d-flex flex-column align-items-end pt-2 ms-2">
-                    <span class="name">{{ user['name'] }}</span>
-                    <span class="username text-secondary">@{{ user['username'] }}</span>
+            <a href="/user/{{ user.key.name}}" class="link-unstyled">
+                <div class="card-user d-flex">
+                    <i class="fa-solid fa-user-circle fa-4x text-primary"></i>
+                    <div class="d-flex flex-column align-items-end pt-2 ms-2">
+                        <span class="name">{{ user['name'] }}</span>
+                        <span class="username text-secondary">@{{ user['username'] }}</span>
+                    </div>
                 </div>
-            </div>
+            </a>
             <div class="date ms-auto">
                 <span class="text-secondary">{{ tweet['date'] }}</span>
             </div>
