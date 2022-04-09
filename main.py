@@ -238,6 +238,41 @@ def putTweet():
     return redirect(url_for('.root', message=message, status=status))
 
 
+def getUsers(str):
+    print(str)
+    query = datastore_client.query(kind='User')
+    query.add_filter('username', '>=', str)
+    return list(query.fetch())
+
+
+@app.route('/search_user', methods=['GET'])
+def searchUser():
+    id_token = request.cookies.get("token")
+    claims = None
+    user_data = None
+    message = request.args.get('message')
+    status = request.args.get('status')
+    result = None
+    if id_token:
+        try:
+            claims = google.oauth2.id_token.verify_firebase_token(
+                id_token, firebase_request_adapter)
+            user_data = getUserByClaims(claims)
+            result = getUsers(request.args.get('search-input'))
+        except ValueError as exc:
+            message = str(exc)
+            status = "error"
+    else:
+        return render_template('login.html')
+    return render_template('search_users.html', user_data=user_data, text=request.args.get('search-input'), result=result,  message=message, status=status)
+
+
+def getTweets(str):
+    query = datastore_client.query(kind='Tweet')
+    query.add_filter('content', '>=', str)
+    return list(query.fetch())
+
+
 def getLast50Tweets(user):
     tweetIds = user['tweets'][-50:]
     tweetKeys = []

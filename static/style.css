@@ -57,3 +57,17 @@ main {
 .user-col {
     width: 300px;
 }
+
+.user-result {
+    flex-wrap: wrap;
+}
+
+.user-result>.card {
+    width: 500px;
+    margin: 30px;
+}
+
+.link-unstyled, .link-unstyled:link, .link-unstyled:hover {
+    color: inherit;
+    text-decoration: inherit;
+}

@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+{% block title %}Result for "{{ text }}"{% endblock %}
+{% block content %}
+<div class="d-flex flex-column align-items-center">
+    <h3>Result for "{{ text }}"</h3>
+    <div class="d-flex user-result text-center me-5">
+        {% for user in result %}
+        <div class="card shadow">
+            <a class="link-unstyled" href="/user/{{ user.key.name }}">
+                <i class="fa-solid fa-user-circle fa-10x text-primary"></i>
+                <div class="card-body">
+                    <h5 class="card-title">{{ user['name'] }}</h5>
+                    <h6 class="text-secondary">@{{ user['username'] }}</h6>
+                    <p class="card-text">{{ user['bio'] }}</p>
+                    <hr>
+                    <p class="card-text">Number of followings : {{ user['followings']|length }}</p>
+                    <p class="card-text">Number of followers : {{ user['followers']|length }}</p>
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+    {% endblock %}
