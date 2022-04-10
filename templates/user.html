@@ -23,16 +23,22 @@
                     Edit
                 </button>
                 {% else %}
-                {% if is in(user.key.name, user_data['followings']) %}
-                <button class="btn btn-outline-primary border rounded-pill">
-                    <i class="fa-solid fa-ban"></i>
-                    Unfollow
-                </button>
+                {% if user.key.name is in user_data['followings'] %}
+                <form action="/unfollow" method="post">
+                    <input type="hidden" name="following-id" value="{{ user.key.name }}">
+                    <button class="btn btn-outline-primary border rounded-pill">
+                        <i class="fa-solid fa-ban"></i>
+                        Unfollow
+                    </button>
+                </form>
                 {% else %}
-                <button class="btn btn-outline-primary border rounded-pill">
-                    <i class="fa-solid fa-plus"></i>
-                    Follow
-                </button>
+                <form action="/follow" method="post">
+                    <input type="hidden" name="following-id" value="{{ user.key.name }}">
+                    <button type="submit" class="btn btn-outline-primary border rounded-pill">
+                        <i class="fa-solid fa-plus"></i>
+                        Follow
+                    </button>
+                </form>
                 {% endif %}
                 {% endif %}
             </div>

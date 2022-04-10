@@ -88,7 +88,7 @@ def initAccount():
             status = "error"
     else:
         redirect('/login')
-    return render_template('init_account.html', user_data=claims, message=message, status=status)
+    return render_template('init_account.html', user_data=claims, init=True, message=message, status=status)
 
 
 @app.route('/put_user', methods=['POST'])
@@ -298,6 +298,47 @@ def searchTweet():
     else:
         return render_template('login.html')
     return render_template('search_tweets.html', user_data=user_data, text=request.args.get('search-input'), result=result,  message=message, status=status)
+
+
+def followUser(user, followingId):
+    followingList = user['followings']
+    followingList.append(followingId)
+    user.update({
+        'followings': followingList
+    })
+    followingUser = getUserById(followingId)
+    followerList = followingUser['followers']
+    followerList.append(user.key.name)
+    followingUser.update({
+        'followers': followerList
+    })
+    transaction = datastore_client.transaction()
+    with transaction:
+        transaction.put(user)
+        transaction.put(followingUser)
+    # return followUser['username']
+
+
+@app.route('/follow', methods=['POST'])
+def follow():
+    id_token = request.cookies.get("token")
+    claims = None
+    user_data = None
+    # message = None
+    # status = None
+    if id_token:
+        try:
+            claims = google.oauth2.id_token.verify_firebase_token(
+                id_token, firebase_request_adapter)
+            user_data = getUserByClaims(claims)
+            followUser(user_data, request.form['following-id'])
+            # message = "You start to follow @" + userNameFollowing
+            # status = "success"
+        except ValueError as exc:
+            return redirect(url_for('.root', message=str(exc), status="error"))
+    else:
+        return render_template('login.html')
+    return redirect(request.referrer)
 
 
 def getLast50Tweets(user):

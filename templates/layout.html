@@ -49,6 +49,7 @@
                 </form>
 
                 <ul class="navbar-nav text-primary">
+                    {% if not init %}
                     <li class="nav-item">
                         <a class="nav-link d-flex flex-column text-center text-primary"
                             href="/user/{{ user_data.key.name }}">
@@ -56,6 +57,7 @@
                             My profile
                         </a>
                     </li>
+                    {% endif %}
                     <li class="nav-item">
                         <a class="nav-link d-flex flex-column text-center text-primary" id="sign-out" href="#">
                             <i class="fa-solid fa-arrow-right-from-bracket fa-2x"></i>
