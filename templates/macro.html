@@ -79,7 +79,7 @@
                     <input type="hidden" name="tweet-id">
                     <div class="mb-3 form-floating">
                         <textarea class="form-control" id="edit-tweet-text" name="tweet-text"
-                            maxlength="280"></textarea>
+                        maxlength="280"></textarea>
                         <label for="edit-tweet-text">Tweet content...</label>
                         <span class="float-end" id="edit-count-tweet"></span>
                     </div>
@@ -113,6 +113,41 @@
             <div class="modal-footer">
                 <button type="submit" form="form-edit-pic" class="btn btn-outline-primary border rounded-pill">Add
                     it
+                    !</button>
+                </div>
+            </div>
+        </div>
+</div>
+{%- endmacro %}
+
+        
+{% macro addTweet() -%}
+<button class="tweet add shadow button btn-outline-primary border rounded-pill" data-bs-toggle="modal"
+data-bs-target="#new-tweet">Add a tweet</button>
+
+<div class="modal fade" id="new-tweet" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">New tweet</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="add-tweet" action="/put_tweet" method="post" enctype="multipart/form-data">
+                    <div class="mb-3 form-floating">
+                        <textarea class="form-control" id="tweet-text" name="tweet-text" maxlength="280"
+                            required></textarea>
+                        <label for="tweet-text">Tweet content...</label>
+                        <span class="float-end" id="count-tweet"></span>
+                    </div>
+                    <div class="form-input">
+                        <label for="file-name">Add a picture to your tweet</label>
+                        <input type="file" class="form-control" id="file-name" name="file-name" />
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" form="add-tweet" class="btn btn-outline-primary border rounded-pill">Post it
                     !</button>
             </div>
         </div>

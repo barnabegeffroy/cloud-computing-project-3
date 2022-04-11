@@ -46,6 +46,7 @@
         </div>
     </div>
     <div class="d-flex flex-column">
+        {{ macro.addTweet() }}
         {% for tweet in tweets %}
         {% if ownProfile %}
         {{ macro.tweet(user_data,user_data, tweet) }}
