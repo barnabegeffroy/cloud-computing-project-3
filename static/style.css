@@ -35,7 +35,7 @@ main {
     font-size: x-large;
 }
 
-#tweet-text {
+#tweet-text, #edit-tweet-text {
     height: 175px;
     /* margin-top: -20px; */
 }

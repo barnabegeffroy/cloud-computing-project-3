@@ -23,11 +23,13 @@
             <p class="card-text">{{ tweet['content'] }}</p>
         </div>
         {% if user.key.name == user_data.key.name %}
-        <div class="card-footer bg-white">
-            <button class="btn btn-outline-primary border rounded-pill">
-                <i class="fa-solid fa-pencil-alt"></i>
-                Edit
-            </button>
+        <div class="card-footer d-flex bg-white">
+            <button class="btn btn-outline-primary border me-3 rounded-pill" data-bs-toggle="modal"
+            data-bs-target="#edit-tweet" data-bs-id="{{ tweet.key.name }}"
+            data-bs-content="{{ tweet['content'] }}">
+            <i class="fa-solid fa-pencil-alt"></i>
+            Edit
+        </button>
             <form action="/delete/{{ tweet.key.name }}">
                 <button type="submit" class="btn btn-outline-danger border rounded-pill">
                     <i class="fa-solid fa-trash"></i>
@@ -38,5 +40,32 @@
         {% endif %}
     </div>
     {% endfor %}
+</div>
+
+<div class="modal fade" id="edit-tweet" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Edit tweet</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="form-edit-tweet" action="/edit_tweet" method="post">
+                    <input type="hidden" name="tweet-id">
+                    <div class="mb-3 form-floating">
+                        <textarea class="form-control" id="edit-tweet-text" name="tweet-text"
+                            maxlength="280"></textarea>
+                        <label for="edit-tweet-text">Tweet content...</label>
+                        <span class="float-end" id="edit-count-tweet"></span>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" form="form-edit-tweet" class="btn btn-outline-primary border rounded-pill">Update
+                    it
+                    !</button>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}

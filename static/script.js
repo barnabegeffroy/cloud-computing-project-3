@@ -83,5 +83,26 @@ window.addEventListener('load', function () {
         var text_length = $('#bio-text').val().length;
         $('#count-tweet').html(text_length + ' / ' + bio_max);
     });
+
+    var editModal = document.getElementById('edit-tweet')
+    if (editModal) {
+        editModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget
+
+            var id = button.getAttribute('data-bs-id')
+            var content = button.getAttribute('data-bs-content')
+
+            var contentBody = editModal.querySelector('#edit-tweet-text')
+            var idInput = editModal.querySelector('input[type="hidden"]')
+            idInput.value = id
+            contentBody.value = content
+        })
+
+        $('#edit-tweet-text').keyup(function () {
+            var text_length = $('#edit-tweet-text').val().length;
+            $('#edit-count-tweet').html(text_length + ' / ' + text_max);
+        });
+    }
+
 });
 
