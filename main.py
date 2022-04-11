@@ -415,6 +415,39 @@ def getFeed(user):
     return feed
 
 
+def deleteTweet(id, user):
+    tweetList = user['tweets']
+    if id not in tweetList:
+        return False
+    entity_key = datastore_client.key('Tweet', id)
+    datastore_client.delete(entity_key)
+    index = tweetList.index(id)
+    del tweetList[index]
+    user.update({
+        'tweets': tweetList
+    })
+    datastore_client.put(user)
+    return True
+
+
+@app.route('/delete/<string:id>')
+def delete(id):
+    id_token = request.cookies.get("token")
+    claims = None
+    user_data = None
+    if id_token:
+        try:
+            claims = google.oauth2.id_token.verify_firebase_token(
+                id_token, firebase_request_adapter)
+            user_data = getUserByClaims(claims)
+            deleteTweet(id, user_data)
+        except ValueError as exc:
+            return redirect(url_for('.root', message=str(exc), status="error"))
+    else:
+        return render_template('login.html')
+    return redirect(request.referrer)
+
+
 @ app.errorhandler(404)
 def notFound(error):
     return redirect(url_for('.root', message=error, status="error"))

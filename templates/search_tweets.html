@@ -28,10 +28,12 @@
                 <i class="fa-solid fa-pencil-alt"></i>
                 Edit
             </button>
-            <button class="btn btn-outline-danger border rounded-pill">
-                <i class="fa-solid fa-trash"></i>
-                Delete
-            </button>
+            <form action="/delete/{{ tweet.key.name }}">
+                <button type="submit" class="btn btn-outline-danger border rounded-pill">
+                    <i class="fa-solid fa-trash"></i>
+                    Delete
+                </button>
+            </form>
         </div>
         {% endif %}
     </div>
