@@ -54,6 +54,7 @@ def root():
     id_token = request.cookies.get("token")
     claims = None
     user_data = None
+    feed = None
     message = request.args.get('message')
     status = request.args.get('status')
     if id_token:
@@ -63,13 +64,13 @@ def root():
             user_data = getUserByClaims(claims)
             if not user_data:
                 return redirect('/init_account')
-
+            feed = getFeed(user_data)
         except ValueError as exc:
             message = str(exc)
             status = "error"
     else:
         return render_template('login.html')
-    return render_template('index.html', user_data=user_data, message=message, status=status)
+    return render_template('index.html', user_data=user_data, feed=feed, message=message, status=status)
 
 
 @app.route('/init_account', methods=['GET'])
@@ -150,9 +151,11 @@ def user(id):
             user_data = getUserByClaims(claims)
             if user_data.key.name == id:
                 ownProfile = True
+                tweets = getLast50Tweets(user_data)
             else:
                 user = getUserById(id)
-            tweets = getLast50Tweets(user_data)
+                tweets = getLast50Tweets(user)
+            tweets.sort(key=lambda x: x['date'], reverse=True)
 
         except ValueError as exc:
             message = str(exc)
@@ -390,8 +393,26 @@ def getLast50Tweets(user):
     for i in range(len(tweetIds)):
         tweetKeys.append(datastore_client.key('Tweet', tweetIds[i]))
     result = datastore_client.get_multi(tweetKeys)
-    result.sort(key=lambda x: x['date'], reverse=True)
     return result
+
+
+def getFeed(user):
+    followingIds = user['followings']
+    followingKeys = []
+    for i in range(len(followingIds)):
+        followingKeys.append(datastore_client.key('User', followingIds[i]))
+    followings = datastore_client.get_multi(followingKeys)
+    followings.append(user)
+    tweets = []
+    for following in followings:
+        tweets += getLast50Tweets(following)
+    tweets.sort(key=lambda x: x['date'], reverse=True)
+    tweets = tweets[:50]
+    feed = []
+    for tweet in tweets:
+        feed.append(
+            ([x for x in followings if x.key.name == tweet['user']][0], tweet))
+    return feed
 
 
 @ app.errorhandler(404)
