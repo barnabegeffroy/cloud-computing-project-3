@@ -1,11 +1,12 @@
 from crypt import methods
 from datetime import datetime
+from fileinput import filename
 import hashlib
+import local_constants
 import google.oauth2.id_token
 from flask import Flask, render_template, request, redirect, url_for
 from google.auth.transport import requests
-from google.cloud import datastore
-
+from google.cloud import datastore, storage
 
 app = Flask(__name__)
 datastore_client = datastore.Client()
@@ -197,7 +198,28 @@ def edit_user():
     return redirect(url_for('.user', id=user_data.key.name, message=message, status=status))
 
 
-def createTweet(user, content):
+def addFile(entity, file):
+    filename_parts = file.filename.split('.')
+    if filename_parts[-1] not in ['jpg', 'jpeg', 'png']:
+        return None
+    name = filename_parts[0]
+    if (len(filename_parts) > 2):
+        name_parts = [filename_parts[i]
+                      for i in range(len(filename_parts) - 1)]
+        ".".join(name_parts)
+        name = name_parts
+
+    id = hashlib.md5(
+        (name + entity.key.name + str(datetime.today())).encode()).hexdigest()
+    file.filename = id + "." + filename_parts[-1]
+    storage_client = storage.Client(project=local_constants.PROJECT_NAME)
+    bucket = storage_client.bucket(local_constants.PROJECT_STORAGE_BUCKET)
+    blob = bucket.blob(file.filename)
+    blob.upload_from_file(file)
+    return file.filename
+
+
+def createTweet(user, content, filename):
     today = datetime.today()
     id = hashlib.md5((user.key.name + str(today)).encode()).hexdigest()
     entity_key = datastore_client.key('Tweet', id)
@@ -205,6 +227,7 @@ def createTweet(user, content):
     tweetEntity.update({
         'user': user.key.name,
         'content': content,
+        'file': filename,
         'date': today
     })
     tweets = user['tweets']
@@ -230,9 +253,20 @@ def putTweet():
             claims = google.oauth2.id_token.verify_firebase_token(
                 id_token, firebase_request_adapter)
             user_data = getUserByClaims(claims)
-            createTweet(user_data, request.form['tweet-text'])
-            message = "Your tweet has been created"
-            status = "success"
+            file = request.files['file-name']
+            isOk = True
+            filename = None
+            if file.filename != '':
+                filename = addFile(user_data, file)
+                isOk = filename != None
+            if isOk:
+                createTweet(
+                    user_data, request.form['tweet-text'], filename)
+                message = "Your tweet has been created"
+                status = "success"
+            else:
+                message = 'Wrong file'
+                status = 'error'
         except ValueError as exc:
             message = str(exc)
             status = "error"
@@ -448,7 +482,6 @@ def delete(id):
 def updateTweet(id, content):
     entity_key = datastore_client.key('Tweet', id)
     tweet = datastore_client.get(entity_key)
-
     tweet.update({
         'content': content,
     })
@@ -468,10 +501,61 @@ def editTweet():
         return render_template('login.html')
     return redirect(request.referrer)
 
+def deleteFileFromStorage(filename):
+    storage_client = storage.Client(project=local_constants.PROJECT_NAME)
+    bucket = storage_client.bucket(local_constants.PROJECT_STORAGE_BUCKET)
+    blob = bucket.blob(filename)
+    blob.delete()
 
-@ app.errorhandler(404)
-def notFound(error):
-    return redirect(url_for('.root', message=error, status="error"))
+
+def deletePicture(id):
+    entity_key = datastore_client.key('Tweet', id)
+    tweet = datastore_client.get(entity_key)
+    deleteFileFromStorage(tweet['file'])
+    tweet.update({
+        'file': None
+    })
+    datastore_client.put(tweet)
+
+@app.route('/delete_pic/<string:id>')
+def deletePicForm(id):
+    id_token = request.cookies.get("token")
+    if id_token:
+        try:
+            deletePicture(id)
+        except ValueError as exc:
+            return redirect(url_for('.root', message=str(exc), status="error"))
+    else:
+        return render_template('login.html')
+    return redirect(request.referrer)
+
+
+def updatePicture(id, file):
+    entity_key = datastore_client.key('Tweet', id)
+    tweet = datastore_client.get(entity_key)
+    filename = None
+    if file.filename != '':
+        filename = addFile(tweet, file)
+    if tweet['file'] != None:
+        deleteFileFromStorage(tweet['file'])
+    tweet.update({
+        'file': filename
+    })
+    datastore_client.put(tweet)
+
+
+@app.route('/edit_pic', methods=['POST'])
+def editPic():
+    id_token = request.cookies.get("token")
+    if id_token:
+        try:
+            updatePicture(request.form['tweet-id'],
+                          request.files['file-name'])
+        except ValueError as exc:
+            return redirect(url_for('.root', message=str(exc), status="error"))
+    else:
+        return render_template('login.html')
+    return redirect(request.referrer)
 
 
 if __name__ == '__main__':

@@ -2,7 +2,7 @@
 {% block title %}Home{% endblock %}
 {% block content %}
 <div class="d-flex flex-column">
-    <button class="tweet add shadow button btn-outline-primary w-100 border rounded-pill" data-bs-toggle="modal"
+    <button class="tweet add shadow button btn-outline-primary border rounded-pill" data-bs-toggle="modal"
         data-bs-target="#new-tweet">Add a tweet</button>
     {% for (user,tweet) in feed %}
     <div class="card tweet mb-3 shadow">
@@ -22,18 +22,36 @@
         </div>
         <div class="card-body">
             <p class="card-text">{{ tweet['content'] }}</p>
+            {% if tweet['file'] %}
+            <div class="pop d-flex justify-content-center">
+                <img class="image" src="https://storage.googleapis.com/my-project-cpa-341615.appspot.com/{{tweet['file']}}" alt="" height="250px">
+            </div>
+            {% endif %}
         </div>
         {% if user.key.name == user_data.key.name %}
         <div class="card-footer d-flex bg-white">
             <button class="btn btn-outline-primary border me-3 rounded-pill" data-bs-toggle="modal"
                 data-bs-target="#edit-tweet" data-bs-id="{{ tweet.key.name }}" data-bs-content="{{ tweet['content'] }}">
                 <i class="fa-solid fa-pencil-alt"></i>
-                Edit
+                Edit content
             </button>
+            <button class="btn btn-outline-primary border me-3 rounded-pill" data-bs-toggle="modal"
+            data-bs-target="#edit-pic" data-bs-id="{{ tweet.key.name }}"">
+            <i class="fa-regular fa-image"></i>
+            {{'Change' if tweet['file'] else 'Add'}} pic
+        </button>
+        {% if tweet['file'] %}
+        <form action="/delete_pic/{{ tweet.key.name }}">
+            <button type="submit" class="btn btn-outline-danger border rounded-pill">
+                <i class="fa-solid fa-trash"></i>
+                Delete pic
+            </button>
+        </form>
+        {% endif %}
             <form action="/delete/{{ tweet.key.name }}">
                 <button type="submit" class="btn btn-outline-danger border rounded-pill">
                     <i class="fa-solid fa-trash"></i>
-                    Delete
+                    Delete tweet
                 </button>
             </form>
         </div>
@@ -59,12 +77,16 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="add-tweet" action="/put_tweet" method="post">
+                <form id="add-tweet" action="/put_tweet" method="post"enctype="multipart/form-data">
                     <div class="mb-3 form-floating">
-                        <textarea class="form-control" id="tweet-text" name="tweet-text" maxlength="280"></textarea>
+                        <textarea class="form-control" id="tweet-text" name="tweet-text" maxlength="280" required></textarea>
                         <label for="tweet-text">Tweet content...</label>
                         <span class="float-end" id="count-tweet"></span>
                     </div>
+                    <div class="form-input">
+                        <label for="file-name">Add a picture to your tweet</label>
+                        <input type="file" class="form-control" id="file-name" name="file-name" />
+                    </div> 
                 </form>
             </div>
             <div class="modal-footer">
@@ -95,6 +117,31 @@
             </div>
             <div class="modal-footer">
                 <button type="submit" form="form-edit-tweet" class="btn btn-outline-primary border rounded-pill">Update
+                    it
+                    !</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="edit-pic" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Choose your best picture</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="form-edit-pic" action="/edit_pic" method="post" enctype="multipart/form-data">
+                    <input type="hidden" name="tweet-id">
+                    <div class="form-input">
+                        <label for="edit-file-name">Add a picture to your tweet</label>
+                        <input type="file" class="form-control" id="edit-file-name" name="file-name" required/>
+                    </div> 
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" form="form-edit-pic" class="btn btn-outline-primary border rounded-pill">Add
                     it
                     !</button>
             </div>

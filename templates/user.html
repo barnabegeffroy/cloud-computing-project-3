@@ -62,6 +62,9 @@
             </div>
             <div class="card-body">
                 <p class="card-text">{{ tweet['content'] }}</p>
+                <div class="pop d-flex justify-content-center">
+                    <img class="image" src="https://storage.googleapis.com/my-project-cpa-341615.appspot.com/{{tweet['file']}}" alt="" height="250px">
+                </div>
             </div>
             {% if ownProfile %}
             <div class="card-footer d-flex bg-white">
@@ -81,56 +84,6 @@
             {% endif %}
         </div>
         {% endfor %}
-        <!-- <div class="card tweet mb-3 shadow">
-            <div class="card-header bg-white d-flex">
-                <div class="card-user d-flex">
-                    <i class="fa-solid fa-user-circle fa-4x text-primary"></i>
-                    <div class="d-flex flex-column align-items-end pt-2 ms-2">
-                        <span class="name">John Doe</span>
-                        <span class="username text-secondary">@johndoe</span>
-                    </div>
-                </div>
-                <div class="date ms-auto">
-                    <span class="text-secondary">32m</span>
-                </div>
-            </div>
-            <div class="card-body">
-                <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque interdum
-                    rutrum
-                    sodales. Nullam mattis fermentum libero, non volutpat. Lorem ipsum dolor sit amet, consectetur
-                    adipiscing
-                    elit. Pellentesque interdum rutrum
-                    sodales. Nullam mattis fermentum libero, non volutpat.</p>
-                <div class="pop d-flex justify-content-center">
-                    <img class="image" src="../static/img.jpg" alt="" height="250px" width="100%">
-                </div>
-            </div>
-        </div>
-        <div class="card tweet mb-3 shadow">
-            <div class="card-header bg-white d-flex">
-                <div class="card-user d-flex">
-                    <i class="fa-solid fa-user-circle fa-4x text-primary"></i>
-                    <div class="d-flex flex-column align-items-end pt-2 ms-2">
-                        <span class="name">John Doe</span>
-                        <span class="username text-secondary">@johndoe</span>
-                    </div>
-                </div>
-                <div class="date ms-auto">
-                    <span class="text-secondary">32m</span>
-                </div>
-            </div>
-            <div class="card-body">
-                <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque interdum
-                    rutrum
-                    sodales. Nullam mattis fermentum libero, non volutpat. Lorem ipsum dolor sit amet, consectetur
-                    adipiscing
-                    elit. Pellentesque interdum rutrum
-                    sodales. Nullam mattis fermentum libero, non volutpat.</p>
-                <div class="pop d-flex justify-content-center">
-                    <img class="image" src="../static/img2.jpg" alt="" height="250px">
-                </div>
-            </div>
-        </div> -->
     </div>
 </div>
 

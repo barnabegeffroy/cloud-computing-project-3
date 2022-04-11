@@ -21,6 +21,9 @@
         </div>
         <div class="card-body">
             <p class="card-text">{{ tweet['content'] }}</p>
+            <div class="pop d-flex justify-content-center">
+                <img class="image" src="https://storage.googleapis.com/my-project-cpa-341615.appspot.com/{{tweet['file']}}" alt="" height="250px">
+            </div>
         </div>
         {% if user.key.name == user_data.key.name %}
         <div class="card-footer d-flex bg-white">
@@ -41,6 +44,15 @@
     </div>
     {% endfor %}
 </div>
+
+<div class="modal fade" id="imagemodal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <img src="" class="imagepreview">
+        </div>
+    </div>
+</div>
+
 
 <div class="modal fade" id="edit-tweet" tabindex="-1">
     <div class="modal-dialog">

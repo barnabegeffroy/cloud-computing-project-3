@@ -103,6 +103,17 @@ window.addEventListener('load', function () {
             $('#edit-count-tweet').html(text_length + ' / ' + text_max);
         });
     }
+    var editPicModal = document.getElementById('edit-pic')
+    if (editPicModal) {
+        editPicModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget
+
+            var id = button.getAttribute('data-bs-id')
+
+            var idInput = editPicModal.querySelector('input[type="hidden"]')
+            idInput.value = id
+        })
+    }
 
 });
 
