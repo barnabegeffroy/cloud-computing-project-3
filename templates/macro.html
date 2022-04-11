@@ -19,7 +19,7 @@
         {% if tweet['file'] %}
         <div class="pop d-flex justify-content-center">
             <img class="image" src="https://storage.googleapis.com/my-project-cpa-341615.appspot.com/{{tweet['file']}}"
-                alt="" height="250px">
+                alt="" height="300px">
         </div>
         {% endif %}
     </div>
@@ -37,7 +37,7 @@
         </button>
         {% if tweet['file'] %}
         <form action="/delete_pic/{{ tweet.key.name }}">
-            <button type="submit" class="btn btn-outline-danger border rounded-pill">
+            <button type="submit" class="btn btn-outline-danger border me-3 rounded-pill">
                 <i class="fa-solid fa-trash"></i>
                 Delete pic
             </button>

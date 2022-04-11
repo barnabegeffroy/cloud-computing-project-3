@@ -1,6 +1,4 @@
-from crypt import methods
 from datetime import datetime
-from fileinput import filename
 import hashlib
 import local_constants
 import google.oauth2.id_token
@@ -556,6 +554,11 @@ def editPic():
     else:
         return render_template('login.html')
     return redirect(request.referrer)
+
+
+@app.errorhandler(404)
+def notFound(error):
+    return redirect(url_for('.root', message=error, status="error"))
 
 
 if __name__ == '__main__':

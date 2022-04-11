@@ -27,7 +27,7 @@ main {
 }
 
 .tweet {
-    width: 500px;
+    width: 625px;
 }
 
 .add {
@@ -41,8 +41,8 @@ main {
 }
 
 .pop {
-    width: 450px;
-    height: 225px;
+    width: 550px;
+    height: 300px;
     overflow: hidden;
 }
 
