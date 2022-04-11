@@ -1,0 +1,121 @@
+{% macro tweet(user, user_data, tweet) -%}
+<div class="card tweet mb-3 shadow">
+    <div class="card-header bg-white d-flex">
+        <a href="/user/{{ user.key.name}}" class="link-unstyled">
+            <div class="card-user d-flex">
+                <i class="fa-solid fa-user-circle fa-4x text-primary"></i>
+                <div class="d-flex flex-column align-items-end pt-2 ms-2">
+                    <span class="name">{{ user['name'] }}</span>
+                    <span class="username text-secondary">@{{ user['username'] }}</span>
+                </div>
+            </div>
+        </a>
+        <div class="date ms-auto">
+            <span class="text-secondary">{{ tweet['date'] }}</span>
+        </div>
+    </div>
+    <div class="card-body">
+        <p class="card-text">{{ tweet['content'] }}</p>
+        {% if tweet['file'] %}
+        <div class="pop d-flex justify-content-center">
+            <img class="image" src="https://storage.googleapis.com/my-project-cpa-341615.appspot.com/{{tweet['file']}}"
+                alt="" height="250px">
+        </div>
+        {% endif %}
+    </div>
+    {% if user.key.name == user_data.key.name %}
+    <div class="card-footer d-flex bg-white">
+        <button class="btn btn-outline-primary border me-3 rounded-pill" data-bs-toggle="modal"
+            data-bs-target="#edit-tweet" data-bs-id="{{ tweet.key.name }}" data-bs-content="{{ tweet['content'] }}">
+            <i class="fa-solid fa-pencil-alt"></i>
+            Edit content
+        </button>
+        <button class="btn btn-outline-primary border me-3 rounded-pill" data-bs-toggle="modal"
+            data-bs-target="#edit-pic" data-bs-id="{{ tweet.key.name }}"">
+        <i class=" fa-regular fa-image"></i>
+            {{'Change' if tweet['file'] else 'Add'}} pic
+        </button>
+        {% if tweet['file'] %}
+        <form action="/delete_pic/{{ tweet.key.name }}">
+            <button type="submit" class="btn btn-outline-danger border rounded-pill">
+                <i class="fa-solid fa-trash"></i>
+                Delete pic
+            </button>
+        </form>
+        {% endif %}
+        <form action="/delete/{{ tweet.key.name }}">
+            <button type="submit" class="btn btn-outline-danger border rounded-pill">
+                <i class="fa-solid fa-trash"></i>
+                Delete tweet
+            </button>
+        </form>
+    </div>
+    {% endif %}
+</div>
+{%- endmacro %}
+
+
+{% macro imageModal() -%}
+<div class="modal fade" id="imagemodal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <img src="" class="imagepreview">
+        </div>
+    </div>
+</div>
+{%- endmacro %}
+
+
+{% macro tweetModals() -%}
+<div class="modal fade" id="edit-tweet" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Edit tweet</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="form-edit-tweet" action="/edit_tweet" method="post">
+                    <input type="hidden" name="tweet-id">
+                    <div class="mb-3 form-floating">
+                        <textarea class="form-control" id="edit-tweet-text" name="tweet-text"
+                            maxlength="280"></textarea>
+                        <label for="edit-tweet-text">Tweet content...</label>
+                        <span class="float-end" id="edit-count-tweet"></span>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" form="form-edit-tweet" class="btn btn-outline-primary border rounded-pill">Update
+                    it
+                    !</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="edit-pic" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Choose your best picture</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="form-edit-pic" action="/edit_pic" method="post" enctype="multipart/form-data">
+                    <input type="hidden" name="tweet-id">
+                    <div class="form-input">
+                        <label for="edit-file-name">Add a picture to your tweet</label>
+                        <input type="file" class="form-control" id="edit-file-name" name="file-name" required />
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" form="form-edit-pic" class="btn btn-outline-primary border rounded-pill">Add
+                    it
+                    !</button>
+            </div>
+        </div>
+    </div>
+</div>
+{%- endmacro %}
