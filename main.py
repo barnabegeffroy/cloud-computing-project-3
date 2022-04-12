@@ -153,9 +153,11 @@ def user(id):
                 tweets = getLast50Tweets(user_data)
             else:
                 user = getUserById(id)
-                tweets = getLast50Tweets(user)
+                if user:
+                    tweets = getLast50Tweets(user)
+                else:
+                    return redirect(url_for('.root', message="This user does not exist", status="error"))
             tweets.sort(key=lambda x: x['date'], reverse=True)
-
         except ValueError as exc:
             message = str(exc)
             status = "error"
