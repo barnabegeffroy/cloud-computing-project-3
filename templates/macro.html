@@ -11,7 +11,7 @@
             </div>
         </a>
         <div class="date ms-auto">
-            <span class="text-secondary">{{ tweet['date'] }}</span>
+            <span class="text-secondary">{{ tweet['date'].strftime('%-d %b, %Y at %-I:%M %p') }}</span>
         </div>
     </div>
     <div class="card-body">

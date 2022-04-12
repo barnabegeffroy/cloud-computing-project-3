@@ -604,7 +604,7 @@ def getLastUrl(referrer, message, status):
         url = referrer
     str = ''
     if message:
-        str = join+'message=' + message.replace(" ", "+") + '&status='+status
+        str = join + 'message=' + message.replace(" ", "+") + '&status='+status
     return url+str
 
 

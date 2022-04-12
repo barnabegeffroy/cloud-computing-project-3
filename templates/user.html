@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 {% import 'macro.html' as macro %}
-{% block title %}User - John Doe{% endblock %}
+{% block title %}User - @{{ user_data['username'] }}{% endblock %}
 {% block content %}
 <div class="d-flex">
     <div class="d-flex flex-column user-col text-center me-5">
