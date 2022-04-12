@@ -121,7 +121,6 @@ def putUser():
     else:
         redirect('/login')
     return redirect(url_for('.root', message=message, status=status))
-    # return render_template('index.html', user_data=user_data,, tutorial=True)
 
 
 @app.route('/login')
@@ -198,7 +197,7 @@ def edit_user():
     return redirect(url_for('.user', id=user_data.key.name, message=message, status=status))
 
 
-def addFile(entity, file):
+def addFileToStorage(entity, file):
     filename_parts = file.filename.split('.')
     if filename_parts[-1] not in ['jpg', 'jpeg', 'png']:
         return None
@@ -257,7 +256,7 @@ def putTweet():
             isOk = True
             filename = None
             if file.filename != '':
-                filename = addFile(user_data, file)
+                filename = addFileToStorage(user_data, file)
                 isOk = filename != None
             if isOk:
                 createTweet(
@@ -455,16 +454,18 @@ def getFeed(user):
 
 def deleteTweet(id, user):
     tweetList = user['tweets']
-    entity_key = datastore_client.key('Tweet', id)
-    tweet = datastore_client.get(entity_key)
+    tweet_key = datastore_client.key('Tweet', id)
+    tweet = datastore_client.get(tweet_key)
     deleteFileFromStorage(tweet['file'])
-    datastore_client.delete(entity_key)
     index = tweetList.index(id)
     del tweetList[index]
     user.update({
         'tweets': tweetList
     })
-    datastore_client.put(user)
+    transaction = datastore_client.transaction()
+    with transaction:
+        transaction.delete(tweet_key)
+        transaction.put(user)
 
 
 @app.route('/delete/<string:id>')
@@ -558,7 +559,7 @@ def updatePicture(id, file):
     tweet = datastore_client.get(entity_key)
     filename = None
     if file.filename != '':
-        filename = addFile(tweet, file)
+        filename = addFileToStorage(tweet, file)
     if not filename:
         return False
     if tweet['file'] != None:
