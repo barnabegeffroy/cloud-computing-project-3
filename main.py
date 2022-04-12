@@ -263,14 +263,14 @@ def putTweet():
                 message = "Your tweet has been created"
                 status = "success"
             else:
-                message = 'Wrong file'
+                message = 'You should should a picture file (png, jpg, jpeg)'
                 status = 'error'
         except ValueError as exc:
             message = str(exc)
             status = "error"
     else:
         redirect('/login')
-    return redirect(url_for('.root', message=message, status=status))
+    return redirect(getLastUrl(request.referrer, message, status))
 
 
 def getUsers(str):
@@ -351,7 +351,7 @@ def followUser(user, followingId):
     with transaction:
         transaction.put(user)
         transaction.put(followingUser)
-    # return followingUser['username']
+    return followingUser['username']
 
 
 @app.route('/follow', methods=['POST'])
@@ -359,21 +359,23 @@ def follow():
     id_token = request.cookies.get("token")
     claims = None
     user_data = None
-    # message = None
-    # status = None
+    message = None
+    status = None
     if id_token:
         try:
             claims = google.oauth2.id_token.verify_firebase_token(
                 id_token, firebase_request_adapter)
             user_data = getUserByClaims(claims)
-            followUser(user_data, request.form['following-id'])
-            # message = "You start to follow @" + userNameFollowing
-            # status = "success"
+            userNameFollowing = followUser(
+                user_data, request.form['following-id'])
+            message = "You start to follow @" + userNameFollowing
+            status = "success"
         except ValueError as exc:
-            return redirect(url_for('.root', message=str(exc), status="error"))
+            message = str(exc)
+            status = "error"
     else:
         return render_template('login.html')
-    return redirect(request.referrer)
+    return redirect(getLastUrl(request.referrer, message, status))
 
 
 def unfollowUser(user, followingId):
@@ -394,7 +396,7 @@ def unfollowUser(user, followingId):
     with transaction:
         transaction.put(user)
         transaction.put(followingUser)
-    # return followingUser['username']
+    return followingUser['username']
 
 
 @app.route('/unfollow', methods=['POST'])
@@ -402,21 +404,23 @@ def unfollow():
     id_token = request.cookies.get("token")
     claims = None
     user_data = None
-    # message = None
-    # status = None
+    message = None
+    status = None
     if id_token:
         try:
             claims = google.oauth2.id_token.verify_firebase_token(
                 id_token, firebase_request_adapter)
             user_data = getUserByClaims(claims)
-            unfollowUser(user_data, request.form['following-id'])
-            # message = "You have stopped to follow @" + userNameFollowing
-            # status = "success"
+            userNameFollowing = unfollowUser(
+                user_data, request.form['following-id'])
+            message = "You have stopped to follow @" + userNameFollowing
+            status = "success"
         except ValueError as exc:
-            return redirect(url_for('.root', message=str(exc), status="error"))
+            message = str(exc)
+            status = "error"
     else:
         return render_template('login.html')
-    return redirect(request.referrer)
+    return redirect(getLastUrl(request.referrer, message, status))
 
 
 def getLast50Tweets(user):
@@ -450,6 +454,8 @@ def getFeed(user):
 def deleteTweet(id, user):
     tweetList = user['tweets']
     entity_key = datastore_client.key('Tweet', id)
+    tweet = datastore_client.get(entity_key)
+    deleteFileFromStorage(tweet['file'])
     datastore_client.delete(entity_key)
     index = tweetList.index(id)
     del tweetList[index]
@@ -464,17 +470,22 @@ def delete(id):
     id_token = request.cookies.get("token")
     claims = None
     user_data = None
+    message = None
+    status = None
     if id_token:
         try:
             claims = google.oauth2.id_token.verify_firebase_token(
                 id_token, firebase_request_adapter)
             user_data = getUserByClaims(claims)
             deleteTweet(id, user_data)
+            message = "Your tweet has been deleted"
+            status = "success"
         except ValueError as exc:
-            return redirect(url_for('.root', message=str(exc), status="error"))
+            message = str(exc)
+            status = "error"
     else:
         return render_template('login.html')
-    return redirect(request.referrer)
+    return redirect(getLastUrl(request.referrer, message, status))
 
 
 def updateTweet(id, content):
@@ -489,15 +500,21 @@ def updateTweet(id, content):
 @app.route('/edit_tweet', methods=['POST'])
 def editTweet():
     id_token = request.cookies.get("token")
+    message = None
+    status = None
     if id_token:
         try:
             updateTweet(request.form['tweet-id'],
                         request.form['tweet-text'])
+            message = "Your tweet has been updated"
+            status = "success"
         except ValueError as exc:
-            return redirect(url_for('.root', message=str(exc), status="error"))
+            message = str(exc)
+            status = "error"
     else:
         return render_template('login.html')
-    return redirect(request.referrer)
+    return redirect(getLastUrl(request.referrer, message, status))
+
 
 def deleteFileFromStorage(filename):
     storage_client = storage.Client(project=local_constants.PROJECT_NAME)
@@ -515,17 +532,23 @@ def deletePicture(id):
     })
     datastore_client.put(tweet)
 
+
 @app.route('/delete_pic/<string:id>')
 def deletePicForm(id):
     id_token = request.cookies.get("token")
+    message = None
+    status = None
     if id_token:
         try:
             deletePicture(id)
+            message = "The picture has been deleted"
+            status = "success"
         except ValueError as exc:
-            return redirect(url_for('.root', message=str(exc), status="error"))
+            message = str(exc)
+            status = "error"
     else:
         return render_template('login.html')
-    return redirect(request.referrer)
+    return redirect(getLastUrl(request.referrer, message, status))
 
 
 def updatePicture(id, file):
@@ -534,26 +557,53 @@ def updatePicture(id, file):
     filename = None
     if file.filename != '':
         filename = addFile(tweet, file)
+    if not filename:
+        return False
     if tweet['file'] != None:
         deleteFileFromStorage(tweet['file'])
     tweet.update({
         'file': filename
     })
     datastore_client.put(tweet)
+    return True
 
 
 @app.route('/edit_pic', methods=['POST'])
 def editPic():
     id_token = request.cookies.get("token")
+    message = None
+    status = None
     if id_token:
         try:
-            updatePicture(request.form['tweet-id'],
-                          request.files['file-name'])
+            if updatePicture(request.form['tweet-id'],
+                             request.files['file-name']):
+                message = "Your picture has been updated"
+                status = "success"
+            else:
+                message = 'You should should a picture file (png, jpg, jpeg)'
+                status = 'error'
         except ValueError as exc:
-            return redirect(url_for('.root', message=str(exc), status="error"))
+            message = str(exc)
+            status = "error"
     else:
         return render_template('login.html')
-    return redirect(request.referrer)
+    return redirect(getLastUrl(request.referrer, message, status))
+
+
+def getLastUrl(referrer, message, status):
+    url = referrer
+    join = '?'
+    try:
+        if '?search' in referrer:
+            join = '&'
+        i = referrer.index('message=')
+        url = referrer[:(i-1)]
+    except:
+        url = referrer
+    str = ''
+    if message:
+        str = join+'message=' + message.replace(" ", "+") + '&status='+status
+    return url+str
 
 
 @app.errorhandler(404)
