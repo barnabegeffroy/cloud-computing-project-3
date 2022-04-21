@@ -18,11 +18,23 @@
             </div>
             <div class="card-footer bg-white">
                 {% if ownProfile %}
-                <button class="btn btn-outline-primary border rounded-pill" data-bs-toggle="modal"
-                    data-bs-target="#modal-edit">
-                    <i class="fa-solid fa-pencil-alt"></i>
-                    Edit
-                </button>
+                <div class="d-flex flex-column">
+                    <button class="btn btn-outline-primary border rounded-pill mb-2" data-bs-toggle="modal"
+                        data-bs-target="#modal-edit">
+                        <i class="fa-solid fa-pencil-alt"></i>
+                        Edit
+                    </button>
+                    <a href="/user/{{user_data.key.name}}/followers"
+                        class="btn btn-outline-primary border rounded-pill mb-2">
+                        <i class="fa-solid fa-eye"></i>
+                        See followers
+                    </a>
+                    <a href="/user/{{user_data.key.name}}/followings"
+                        class="btn btn-outline-primary border rounded-pill">
+                        <i class="fa-solid fa-eye"></i>
+                        See followings
+                    </a>
+                </div>
                 {% else %}
                 {% if user.key.name is in user_data['followings'] %}
                 <form action="/unfollow" method="post">
@@ -40,6 +52,7 @@
                         Follow
                     </button>
                 </form>
+
                 {% endif %}
                 {% endif %}
             </div>

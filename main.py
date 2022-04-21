@@ -162,6 +162,41 @@ def user(id):
     return render_template('user.html', user_data=userData, user=user, ownProfile=ownProfile, tweets=tweets, message=message, status=status)
 
 
+def getUsers(user, list):
+    userIds = user[list]
+    userKeys = []
+    for i in range(len(userIds)):
+        userKeys.append(datastoreClient.key('User', userIds[i]))
+    return datastoreClient.get_multi(userKeys)
+
+
+@app.route('/user/<string:id>/<string:list>', methods=['GET'])
+def printUsersList(id, list):
+    idToken = request.cookies.get("token")
+    claims = None
+    userData = None
+    message = request.args.get('message')
+    status = request.args.get('status')
+    result = None
+    text = "Your " + list
+    if idToken:
+        try:
+            claims = google.oauth2.id_token.verify_firebase_token(
+                idToken, firebaseRequestAdapter)
+            userData = getUserByClaims(claims)
+            if userData.key.name != id:
+                return redirect(url_for('.user', id=id, message="You cannot have acces to this page", status="error"))
+            if list != 'followers' and list != 'followings':
+                return redirect(url_for('.user', id=id, message="This page does not exist", status="error"))
+            result = getUsers(userData, list)
+        except ValueError as exc:
+            message = str(exc)
+            status = "error"
+    else:
+        return render_template('login.html')
+    return render_template('search_users.html', user_data=userData, text=text, result=result,  message=message, status=status)
+
+
 def updateUser(user, name, bio):
     user.update({
         'name': name,
@@ -278,7 +313,7 @@ def putTweet():
     return redirect(getLastUrl(request.referrer, message, status))
 
 
-def getUsers(str):
+def getUsersByString(str):
     query = datastoreClient.query(kind='User')
     query.add_filter('username', '=', str)
     return list(query.fetch())
@@ -292,18 +327,19 @@ def searchUser():
     message = request.args.get('message')
     status = request.args.get('status')
     result = None
+    text = 'Result for "'+request.args.get('search-input')+'"'
     if idToken:
         try:
             claims = google.oauth2.id_token.verify_firebase_token(
                 idToken, firebaseRequestAdapter)
             userData = getUserByClaims(claims)
-            result = getUsers(request.args.get('search-input'))
+            result = getUsersByString(request.args.get('search-input'))
         except ValueError as exc:
             message = str(exc)
             status = "error"
     else:
         return render_template('login.html')
-    return render_template('search_users.html', user_data=userData, text=request.args.get('search-input'), result=result,  message=message, status=status)
+    return render_template('search_users.html', user_data=userData, text=text, result=result,  message=message, status=status)
 
 
 def getTweets(str):
