@@ -1,3 +1,4 @@
+<!-- layout for tweet -->
 {% macro tweet(user, user_data, tweet) -%}
 <div class="card tweet mb-3 shadow">
     <div class="card-header bg-white d-flex">
@@ -55,6 +56,7 @@
 {%- endmacro %}
 
 
+<!-- layout for image modal -->
 {% macro imageModal() -%}
 <div class="modal fade" id="imagemodal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog">
@@ -65,7 +67,7 @@
 </div>
 {%- endmacro %}
 
-
+<!-- layout for tweet modals (editing picture and content) -->
 {% macro tweetModals() -%}
 <div class="modal fade" id="edit-tweet" tabindex="-1">
     <div class="modal-dialog">
@@ -79,7 +81,7 @@
                     <input type="hidden" name="tweet-id">
                     <div class="mb-3 form-floating">
                         <textarea class="form-control" id="edit-tweet-text" name="tweet-text"
-                        maxlength="280"></textarea>
+                            maxlength="280"></textarea>
                         <label for="edit-tweet-text">Tweet content...</label>
                         <span class="float-end" id="edit-count-tweet"></span>
                     </div>
@@ -114,16 +116,16 @@
                 <button type="submit" form="form-edit-pic" class="btn btn-outline-primary border rounded-pill">Add
                     it
                     !</button>
-                </div>
             </div>
         </div>
+    </div>
 </div>
 {%- endmacro %}
 
-        
+<!-- layout for tweet modals (adding) -->
 {% macro addTweet() -%}
 <button class="tweet add shadow button btn-outline-primary border rounded-pill" data-bs-toggle="modal"
-data-bs-target="#new-tweet">Add a tweet</button>
+    data-bs-target="#new-tweet">Add a tweet</button>
 
 <div class="modal fade" id="new-tweet" tabindex="-1">
     <div class="modal-dialog">
