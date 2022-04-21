@@ -65,7 +65,7 @@ def root():
             message = str(exc)
             status = "error"
     else:
-        return render_template('login.html')
+        return redirect('/login')
     return render_template('index.html', user_data=userData, feed=feed, message=message, status=status)
 
 
@@ -163,6 +163,8 @@ def user(id):
 
 
 def getUsers(user, list):
+    if list != 'followers' and list != 'followings':
+        return None
     userIds = user[list]
     userKeys = []
     for i in range(len(userIds)):
