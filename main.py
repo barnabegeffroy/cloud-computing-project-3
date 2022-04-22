@@ -158,7 +158,7 @@ def user(id):
             message = str(exc)
             status = "error"
     else:
-        return render_template('login.html')
+        return redirect('/login')
     return render_template('user.html', user_data=userData, user=user, ownProfile=ownProfile, tweets=tweets, message=message, status=status)
 
 
@@ -195,7 +195,7 @@ def printUsersList(id, list):
             message = str(exc)
             status = "error"
     else:
-        return render_template('login.html')
+        return redirect('/login')
     return render_template('search_users.html', user_data=userData, text=text, result=result,  message=message, status=status)
 
 
@@ -340,7 +340,7 @@ def searchUser():
             message = str(exc)
             status = "error"
     else:
-        return render_template('login.html')
+        return redirect('/login')
     return render_template('search_users.html', user_data=userData, text=text, result=result,  message=message, status=status)
 
 
@@ -373,7 +373,7 @@ def searchTweet():
             message = str(exc)
             status = "error"
     else:
-        return render_template('login.html')
+        return redirect('/login')
     return render_template('search_tweets.html', user_data=userData, text=request.args.get('search-input'), result=result,  message=message, status=status)
 
 
@@ -419,7 +419,7 @@ def follow():
             message = str(exc)
             status = "error"
     else:
-        return render_template('login.html')
+        return redirect('/login')
     return redirect(getLastUrl(request.referrer, message, status))
 
 
@@ -467,7 +467,7 @@ def unfollow():
             message = str(exc)
             status = "error"
     else:
-        return render_template('login.html')
+        return redirect('/login')
     return redirect(getLastUrl(request.referrer, message, status))
 
 
@@ -544,7 +544,7 @@ def delete(id):
             message = str(exc)
             status = "error"
     else:
-        return render_template('login.html')
+        return redirect('/login')
     return redirect(getLastUrl(request.referrer, message, status))
 
 
@@ -571,7 +571,7 @@ def editTweet():
             message = str(exc)
             status = "error"
     else:
-        return render_template('login.html')
+        return redirect('/login')
     return redirect(getLastUrl(request.referrer, message, status))
 
 
@@ -605,7 +605,7 @@ def deletePicForm(id):
             message = str(exc)
             status = "error"
     else:
-        return render_template('login.html')
+        return redirect('/login')
     return redirect(getLastUrl(request.referrer, message, status))
 
 
@@ -644,7 +644,7 @@ def editPic():
             message = str(exc)
             status = "error"
     else:
-        return render_template('login.html')
+        return redirect('/login')
     return redirect(getLastUrl(request.referrer, message, status))
 
 
