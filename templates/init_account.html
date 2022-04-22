@@ -6,6 +6,23 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Usage information</h5>
+            </div>
+            <div class="modal-body m-0">
+                <div class="input-group">
+                    <button class="btn btn-outline-primary border" type="button" id="search-object-demo">
+                        <i class="fa-solid fa-at fa-2x"></i>
+                    </button>
+                    <input type="search" name="search-input" class="form-control" id="search-input-demo"
+                        placeholder="Username" required>
+                </div>
+                <p class="m-0">
+                    On the navbar there will a search bar like this 👆️, to switch between search by username and the
+                    search by tweet content just click on the <i class="fa-solid fa-at fa-2x"></i> or the <i
+                        class="fa-solid fa-message fa-2x"></i>.
+                </p>
+            </div>
+            <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Create your account</h5>
             </div>
             <div class="modal-body">
@@ -34,4 +51,14 @@
         </div>
     </div>
 </div>
+
+<script>
+    var search = document.getElementById('search-object-demo')
+    search.addEventListener('click', function () {
+        var isUser = search.value == 'user'
+        search.innerHTML = isUser ? '<i class="fa-solid fa-at fa-2x"></i>' : '<i class="fa-solid fa-message fa-2x"></i>'
+        document.getElementById('search-input-demo').setAttribute('placeholder', isUser ? 'Username' : 'Content of the tweet')
+        search.value = isUser ? 'tweet' : 'user'
+    });
+</script>
 {% endblock %}
