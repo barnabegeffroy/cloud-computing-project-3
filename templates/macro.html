@@ -37,14 +37,14 @@
             {{'Change' if tweet['file'] else 'Add'}} pic
         </button>
         {% if tweet['file'] %}
-        <form action="/delete_pic/{{ tweet.key.name }}">
+        <form action="/delete_pic/{{ tweet.key.name }}" method="post">
             <button type="submit" class="btn btn-outline-danger border me-3 rounded-pill">
                 <i class="fa-solid fa-trash"></i>
                 Delete pic
             </button>
         </form>
         {% endif %}
-        <form action="/delete/{{ tweet.key.name }}">
+        <form action="/delete/{{ tweet.key.name }}" method="post">
             <button type="submit" class="btn btn-outline-danger border rounded-pill">
                 <i class="fa-solid fa-trash"></i>
                 Delete tweet

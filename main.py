@@ -525,7 +525,7 @@ def deleteTweet(id, user):
         transaction.put(user)
 
 
-@app.route('/delete/<string:id>')
+@app.route('/delete/<string:id>', methods=['POST'])
 def delete(id):
     idToken = request.cookies.get("token")
     claims = None
@@ -591,7 +591,7 @@ def deletePicture(id):
     datastoreClient.put(tweet)
 
 
-@app.route('/delete_pic/<string:id>')
+@app.route('/delete_pic/<string:id>', methods=['POST'])
 def deletePicForm(id):
     idToken = request.cookies.get("token")
     message = None
